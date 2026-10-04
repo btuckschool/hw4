@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Customs — App Check</title>
+<style>
+  :root {
+    --yale-blue: #00356b;
+    --yale-blue-light: #286dc0;
+    --tint: #eaf1fa;
+    --ink: #222;
+    --muted: #4a4a4a;
+    --line: #ddd;
+    --pass: #1f6b3a;
+    --pass-bg: #e7f4ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    background: #fff;
+  }
+  header.top {
+    background: var(--yale-blue);
+    color: #fff;
+    padding: 36px 24px 28px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  h1, h2, h3 { font-family: Garamond, "EB Garamond", Georgia, "Times New Roman", serif; color: var(--yale-blue); line-height: 1.2; }
+  header.top h1 { color: #fff; font-size: 2.4rem; margin: 0 0 6px; }
+  header.top p { margin: 0; color: rgba(255,255,255,.85); }
+  main { padding: 28px 24px 60px; }
+  h2 { font-size: 1.8rem; margin: 48px 0 6px; padding-top: 12px; border-top: 3px solid var(--yale-blue); }
+  h3 { font-size: 1.25rem; margin: 28px 0 6px; }
+  .lead { color: var(--muted); margin: 0 0 12px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 8px; font-size: .95rem; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--tint); color: var(--yale-blue); }
+  .pass { display: inline-block; background: var(--pass-bg); color: var(--pass); font-weight: 700; padding: 1px 9px; border-radius: 999px; font-size: .85rem; }
+  figure { margin: 14px 0 26px; }
+  figure a { display: block; }
+  figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 4px 14px rgba(0,37,76,.10); }
+  figcaption { margin-top: 10px; padding: 10px 14px; background: var(--tint); border-left: 4px solid var(--yale-blue); border-radius: 0 4px 4px 0; }
+  figcaption strong { color: var(--yale-blue); }
+  .quote { font-style: italic; }
+  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-size: .9em; }
+  .meta { font-size: .92rem; color: var(--muted); }
+  footer { color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 48px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>Campus Customs — App Check</h1>
+    <p>Live test of the running website and Handsome Dan, the chat assistant · October 4, 2026</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <p class="meta">
+    <strong>Setup:</strong> React + Vite frontend at <code>localhost:5180</code>, FastAPI backend at <code>localhost:8000</code>
+    (<code>uvicorn main:app --reload --port 8000</code>), PydanticAI agent on OpenAI's Luna model through Portkey,
+    reading <code>data/campus_customs.db</code>. Tested as a guest in a fresh browser session (Chromium, 1440×900), so no
+    test chats were saved to the database. Click any screenshot to open it full size.
+  </p>
+
+  <table>
+    <tr><th>#</th><th>Check</th><th>Result</th></tr>
+    <tr><td>1</td><td>Chat answers an item's inventory level accurately from the database</td><td><span class="pass">PASS</span></td></tr>
+    <tr><td>2</td><td>Asking for a product category shows matching product cards that open the full product page</td><td><span class="pass">PASS</span></td></tr>
+    <tr><td>3</td><td>Problem 9 usability features work (filters and sort; suggested questions)</td><td><span class="pass">PASS</span></td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2>1. Inventory level from the chat</h2>
+  <p class="lead">
+    On the Davenport College Crewneck page, the shopper opened the chat and asked about stock in two sizes without
+    naming the product. The answers were compared with the <code>inventory</code> table at the time of the test.
+  </p>
+
+  <table>
+    <tr><th>Size</th><th>Database (<code>inventory.quantity</code>)</th><th>Product page shows</th><th>Handsome Dan said</th></tr>
+    <tr><td>XXL</td><td>8</td><td>8 in stock</td><td class="quote">"There are 8 Davenport College Crewnecks left in XXL."</td></tr>
+    <tr><td>S</td><td>0</td><td>Out of stock</td><td class="quote">"That one is out of stock in small—there are 0 left. It is still available in XS, M, L, XL and XXL."</td></tr>
+  </table>
+  <p class="meta">Other sizes in the database: XS 20, M 5, L 12, XL 20, matching the sizes Handsome Dan listed as available.</p>
+
+  <h3>1a. In-stock size</h3>
+  <figure>
+    <a href="app_check_images/01-inventory-in-stock.png"><img src="app_check_images/01-inventory-in-stock.png" alt="Chat answering that 8 Davenport College Crewnecks are left in XXL, next to the product page showing XXL: 8 in stock"></a>
+    <figcaption><strong>What this proves:</strong> asked "How many of these do you have left in XXL?", the chat answered
+      <em>8</em>, exactly the database value and the "XXL: 8 in stock" box on the page. It also understood "these"
+      meant the product on screen.</figcaption>
+  </figure>
+
+  <h3>1b. Out-of-stock size</h3>
+  <figure>
+    <a href="app_check_images/01b-inventory-out-of-stock.png"><img src="app_check_images/01b-inventory-out-of-stock.png" alt="Chat answering that the crewneck is out of stock in small and listing the available sizes"></a>
+    <figcaption><strong>What this proves:</strong> for size S (0 in the database), the chat clearly said it's out of stock
+      and listed the sizes that are available, rather than guessing or implying it could be ordered.</figcaption>
+  </figure>
+
+  <!-- ============================================================ -->
+  <h2>2. Search result cards for a product category</h2>
+  <p class="lead">
+    From the home page, the shopper asked <span class="quote">"What kinds of t-shirts do you have?"</span>
+    The database has 25 products whose garment type is a T-shirt.
+  </p>
+
+  <figure>
+    <a href="app_check_images/02-category-search-cards.png"><img src="app_check_images/02-category-search-cards.png" alt="Products page showing 25 T-shirt product cards from the chat, with highlight cards in the chat panel"></a>
+    <figcaption><strong>What this proves:</strong> the chat updated the page to "T-shirts — From your chat" with all
+      <em>25</em> matching product cards (image, name, price, short description). It also showed 6 highlight cards in
+      the chat and a "View all 25 on the page" link. The filter bar shows Category = T-shirts, so the search is visible
+      and adjustable.</figcaption>
+  </figure>
+
+  <figure>
+    <a href="app_check_images/03-card-opens-product-page.png"><img src="app_check_images/03-card-opens-product-page.png" alt="The 2025 Yale Vs Harvard T Shirt product page after clicking its card, with the chat still open"></a>
+    <figcaption><strong>What this proves:</strong> clicking the first card (2025 Yale Vs Harvard T Shirt) opened its full
+      product page with price, description and stock in every size. The chat and its result cards stayed open while
+      the shopper moved between pages.</figcaption>
+  </figure>
+
+  <!-- ============================================================ -->
+  <h2>3. Usability features from Problem 9</h2>
+
+  <h3>3a. Filters and sorting on the Products page</h3>
+  <figure>
+    <a href="app_check_images/04-filters-and-sort.png"><img src="app_check_images/04-filters-and-sort.png" alt="Products page filtered to navy hoodies in stock in XL, sorted by price low to high, showing 19 styles"></a>
+    <figcaption><strong>What this proves:</strong> with Category = Hoodies, Color = Navy, In stock in = XL and Sort =
+      Price: low to high, the page narrowed to <em>19</em> styles. A direct database count of navy hoodies with XL stock
+      is also 19, and prices run from $45.00 up to $88.00, so the sort works.</figcaption>
+  </figure>
+
+  <h3>3b. Suggested questions in the chat</h3>
+  <figure>
+    <a href="app_check_images/05-suggested-question.png"><img src="app_check_images/05-suggested-question.png" alt="Chat on the Ice Hockey Left Chest Hoodie page after tapping the suggested question 'What sizes are in stock?'"></a>
+    <figcaption><strong>What this proves:</strong> on a product page, the chat offered "What sizes are in stock?", "Does
+      this come in other colors?" and "Show me similar items". One tap got a correct answer: in stock in XS, S and XXL,
+      and out of stock in M, L and XL, matching the database (XS 20, S 8, XXL 25; M, L and XL 0).</figcaption>
+  </figure>
+
+  <footer>
+    Screenshots are in <code>app_check_images/</code> next to this file. Test run: 2026-10-04, 4:22–4:23 PM EDT.
+    The database still held 3 users and 22 saved chat messages after the test, so nothing was written during it.
+  </footer>
+</main>
+</body>
+</html>

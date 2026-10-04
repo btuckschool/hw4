@@ -1,0 +1,25 @@
+# Secrets: never commit real keys. Copy .env.example to .env and fill it in locally.
+.env
+.env.*
+!.env.example
+
+# Local-only data pack: the database (and any backups) and product images.
+data/
+*.db
+*.db-journal
+*.sqlite
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node / Vite
+node_modules/
+frontend/dist/
+*.log
+
+# Editors and OS
+.DS_Store
+.vscode/
+.idea/
